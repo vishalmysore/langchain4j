@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CookGPT - Recipe Management</title>
+</head>
+<body>
+<h1>Recipe Management</h1>
+
+<h2>Search Recipe</h2>
+<form id="searchRecipeForm">
+    <label for="searchQuery">Search Recipe:</label><br>
+    <textarea type="textarea" id="searchQuery" name="searchQuery" required></textarea><<br><br>
+    <button type="submit" >Search Recipe</button>
+</form>
+<div id="recipeListSearch" name="recipeListSearch"></div>
+
+<h2>Add Recipe</h2>
+<form id="addRecipeForm">
+    <label for="recipeName">Recipe Details:</label>
+    <textarea type="textarea" id="recipeName" name="recipeName" required></textarea><<br><br>
+    <!-- Add more fields as needed -->
+    <button type="submit">Add Recipe</button>
+</form>
+
+<h2>Get All Recipes</h2>
+<button onclick="getRecipes()">Get Recipes</button>
+<div id="recipeList"></div>
+
+<h2>Modify Recipe</h2>
+<form id="modifyRecipeForm">
+    <label for="recipeId">Recipe ID:</label>
+    <input type="text" id="recipeId" name="recipeId" required><br><br>
+    <label for="newRecipeName">New Recipe Name:</label>
+    <input type="text" id="newRecipeName" name="newRecipeName" required><br><br>
+    <!-- Add more fields as needed -->
+    <button type="submit">Modify Recipe</button>
+</form>
+
+<script>
+    const apiUrl = 'http://localhost:8080/recipes';
+function getRecipes() {
+    fetch(apiUrl+'/getAllRecipe')
+        .then(response => response.json())
+        .then(data => {
+            const recipeListDiv = document.getElementById('recipeList');
+            recipeListDiv.innerHTML = '';
+
+            // Check if data is an array
+            if (Array.isArray(data)) {
+                data.forEach(recipe => {
+                    const recipeDiv = document.createElement('div');
+                    recipeDiv.textContent = `${recipe.id}: ${recipe.name}`;
+                    recipeListDiv.appendChild(recipeDiv);
+                });
+            } else {
+                // Handle case where data is not an array (e.g., single recipe object)
+                const recipeDiv = document.createElement('div');
+                recipeDiv.textContent = `${data.id}: ${data.name}`;
+                recipeListDiv.appendChild(recipeDiv);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+    function getRecipesList() {
+        fetch(apiUrl+'/getAllRecipe')
+            .then(response => response.json())
+            .then(data => {
+                const recipeListDiv = document.getElementById('recipeList');
+                recipeListDiv.innerHTML = '';
+                data.forEach(recipe => {
+                    const recipeDiv = document.createElement('div');
+                    recipeDiv.textContent = `${recipe.id}: ${recipe.name}`;
+                    recipeListDiv.appendChild(recipeDiv);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    document.getElementById('addRecipeForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const recipeName = document.getElementById('recipeName').value;
+        const formData = new FormData();
+        formData.append('name', recipeName);
+        fetch(apiUrl+'/addRecipe', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            getRecipes(); // Refresh recipe list after adding
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+document.getElementById('searchRecipeForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const recipeName = document.getElementById('searchQuery').value;
+    const formData = new FormData();
+    formData.append('name', recipeName);
+
+    fetch('http://localhost:8080/recipes/searchRecipe', {
+        method: 'POST',
+        body: recipeName
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json(); // Parse response JSON
+    })
+    .then(data => {
+        // Update HTML with search results
+        const recipeListDiv = document.getElementById('recipeListSearch');
+        recipeListDiv.innerHTML = ''; // Clear previous results
+
+        if (data.length > 0) {
+            data.forEach(recipe => {
+                const recipeDiv = document.createElement('div');
+                recipeDiv.textContent = `${recipe.id}: ${recipe.name}`;
+                recipeListDiv.appendChild(recipeDiv);
+            });
+        } else {
+            recipeListDiv.textContent = JSON.stringify(data, null, 2);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
+
+
+    document.getElementById('modifyRecipeForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const recipeId = document.getElementById('recipeId').value;
+        const newRecipeName = document.getElementById('newRecipeName').value;
+        const formData = new FormData();
+        formData.append('name', newRecipeName);
+        fetch(apiUrl + '/' + recipeId, {
+            method: 'PUT',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            getRecipes(); // Refresh recipe list after modifying
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+</script>
+</body>
+</html>

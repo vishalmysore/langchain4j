@@ -1,0 +1,3 @@
+spring.mvc.pathmatch.matching-strategy: ant_path_matcher
+chromadb-base-url: https://chromadb-6mxzvcwm2a-uc.a.run.app
+chromadb-db-name: cookgptrag

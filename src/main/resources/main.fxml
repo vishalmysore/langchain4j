@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="CookGPTDesktop">
+
+    <!-- Left Side Pane for Menu Items -->
+    <ListView fx:id="menuItemsListView" BorderPane.alignment="CENTER">
+        <items>
+            <FXCollections fx:factory="observableArrayList">
+                <String fx:value="Add Recipe"/>
+                <String fx:value="Upload PDF"/>
+                <String fx:value="Query Recipe"/>
+            </FXCollections>
+        </items>
+    </ListView>
+
+    <!-- Right Side Pane for Text Area -->
+    <TextArea fx:id="textArea" BorderPane.alignment="CENTER"/>
+
+</BorderPane>
