@@ -1,7 +1,11 @@
 package com.vishal.web;
 
 import com.vishal.web.backend.ChromaDbConnector;
+import com.vishal.web.backend.LocalAILLMConnector;
+import com.vishal.web.backend.MasterChefConnector;
 import com.vishal.web.data.Recipe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,16 +16,23 @@ import java.util.Map;
 
 @Service
 public class RecipeServiceImpl implements RecipeService {
-
+    private final static Logger LOG = LoggerFactory.getLogger(RecipeServiceImpl.class);
     @Autowired
     ChromaDbConnector vectorDB;
+    @Autowired
+    LocalAILLMConnector llmConnector;
     private Map<Long, Recipe> recipeMap = new HashMap<>();
     private long nextId = 1;
 
+    @Autowired
+    private MasterChefConnector masterChef;
     public Recipe searchRecipe(String freeText){
 
         Recipe searchedRec = new Recipe();
-        searchedRec.setDescription(vectorDB.getData(freeText));
+        String ragData = vectorDB.getData(freeText);
+        //String details = llmConnector.inference(freeText,ragData);
+        masterChef.getChefHelper().chat(freeText);
+        searchedRec.setDescription(ragData);
         return searchedRec;
     }
     @Override
@@ -31,6 +42,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     public void addRecipe(String recipe) {
+        LOG.info(recipe);
         vectorDB.addData(recipe);
     }
 

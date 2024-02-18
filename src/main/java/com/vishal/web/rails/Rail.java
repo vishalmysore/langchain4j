@@ -5,4 +5,5 @@ import jakarta.servlet.ServletResponse;
 
 public interface Rail {
    boolean applyRail(ServletRequest req) throws RailBreakException;
+   boolean applyRail(ServletResponse req) throws RailBreakException;
 }

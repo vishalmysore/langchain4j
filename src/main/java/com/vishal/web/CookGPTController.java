@@ -1,6 +1,9 @@
 package com.vishal.web;
 
+import com.vishal.web.backend.ChromaDbConnector;
 import com.vishal.web.data.Recipe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -10,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/recipes")
 public class CookGPTController {
-
+    private final static Logger LOG = LoggerFactory.getLogger(CookGPTController.class);
     @Autowired
     private RecipeService recipeService;
 
@@ -23,6 +26,7 @@ public class CookGPTController {
 
     @PostMapping("/addRecipeText")
     public ResponseEntity<Void> addRecipeText(@RequestBody String recipeTxt) {
+        LOG.info(recipeTxt);
         recipeService.addRecipe(recipeTxt);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

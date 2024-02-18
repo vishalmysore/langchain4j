@@ -1,37 +1,23 @@
 package com.vishal.web.rails;
 
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import lombok.extern.java.Log;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
-import org.springframework.web.util.ContentCachingRequestWrapper;
-
-import java.io.IOException;
-import java.util.Map;
-
 
 @Component
-@Order(1)
+@Order(2)
 @Slf4j
-public class NERRail implements Filter, Rail{
-    private final static Logger LOG = LoggerFactory.getLogger(NERRail.class);
+public class ProfanityRail implements Filter, Rail{
+    private final static Logger LOG = LoggerFactory.getLogger(ProfanityRail.class);
 
     @Override
     public void init(final FilterConfig filterConfig) {
